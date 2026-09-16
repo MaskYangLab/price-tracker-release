@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1"
     />
-    <title>我的價格紀錄｜v1.0.0</title>
+    <title>我的價格紀錄｜v1.1.2</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
       :root {
@@ -639,7 +639,7 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
       <h1>價格查詢</h1>
       <div class="version">
         <strong>我的價格紀錄</strong
-        ><br />版本 v1.1.1｜條碼掃描・商品管理・價格追蹤・雲端更新
+        ><br />版本 v1.1.2｜條碼掃描・商品管理・價格追蹤・雲端更新
       </div>
       <button class="primary" id="startCamera">開啟相機掃描</button
       ><button class="secondary hidden" id="stopCamera">關閉相機</button>
@@ -750,10 +750,16 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
     </div>
     <nav class="bottom" aria-label="主要導覽">
       <button data-page="page-scan" class="active" type="button" aria-label="價格查詢"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg><span>價格查詢</span></button>
-      <button data-page="page-list" type="button" aria-label="商品列表"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"></path><path d="M4 6h.01M4 12h.01M4 18h.01"></path></svg><span>商品列表</span></button>
-      <button data-page="page-trend" type="button" aria-label="價格趨勢"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 4-4 3 2 5-6"></path></svg><span>價格趨勢</span></button>
+      <button data-page="page-list" type="button" aria-label="商品列表"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"></path><path d="M4 6h.01M4 12h.01M4 18h.01"></path></svg><span>商品列表</span></button>   
       <button data-page="page-report" type="button" aria-label="消費報表"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"></path><path d="M15 3v4h4M9 13h6M9 17h6"></path></svg><span>消費報表</span></button>
-      <button data-page="page-more" type="button" aria-label="更多"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19 15a2 2 0 0 0 1.5-2 2 2 0 0 0-1.5-2 2 2 0 0 0-1-2.5 2 2 0 0 0-2.5-1A2 2 0 0 0 14 6a2 2 0 0 0-2-1 2 2 0 0 0-2 1 2 2 0 0 0-1.5 1.5A2 2 0 0 0 6 9a2 2 0 0 0-1 2 2 2 0 0 0 1 2 2 0 0 0 0 3 2 2 0 0 0 2 1 2 2 0 0 0 3 0 2 2 0 0 0 1 0 2 2 0 0 0 2 1 2 2 0 0 0 2-1Z"></path></svg><span>更多</span></button>
+      <button data-page="page-more" type="button" aria-label="更多">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="6" cy="12" r="1.75"></circle>
+    <circle cx="12" cy="12" r="1.75"></circle>
+    <circle cx="18" cy="12" r="1.75"></circle>
+  </svg>
+  <span>更多</span>
+</button>
     </nav>
     <script>
       const CLIENT_ID =
@@ -1212,7 +1218,7 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
               esc(p.aliasBarcodes.join("、")) +
               "</div></div>"
             : "") +
-          '</div><div class="actions"><button class="primary" id="add">新增價格</button><button class="secondary" id="edit">編輯商品</button><button class="danger" id="remove">刪除商品</button><button class="secondary" id="back">返回列表</button></div></div><h3>價格紀錄</h3>' +
+          '<div class="actions"><button class="primary" id="add">新增價格</button><button class="secondary" id="trend">價格趨勢</button><button class="secondary" id="edit">編輯商品</button><button class="danger" id="remove">刪除商品</button><button class="secondary" id="back">返回列表</button></div>' +
           (rs
             .map(
               (r) =>
@@ -1232,6 +1238,7 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
             .join("") || '<p class="muted">尚無價格紀錄</p>');
         $("t").append(thumb(p));
         $("add").onclick = () => priceForm(p);
+        $("trend").onclick = () => trendModal(p);
         $("edit").onclick = () => productForm(p);
         $("remove").onclick = () => delProduct(p.barcode);
         $("back").onclick = () => {
@@ -1246,6 +1253,56 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
         );
         renderTrend(p);
       }
+      function trendModal(p) {
+        const rs = [...liveRecords(p)].sort(
+            (a, b) => String(b.date).localeCompare(String(a.date)),
+          ),
+          prices = rs.map((r) => Number(r.price) || 0),
+          min = prices.length ? Math.min(...prices) : 0,
+          max = prices.length ? Math.max(...prices) : 0,
+          minRecord = rs.length
+            ? rs.reduce(
+                (best, r) => (Number(r.price) < Number(best.price) ? r : best),
+                rs[0],
+              )
+            : null,
+          latest = rs.length ? rs[0] : null;
+
+        modal(
+          "價格趨勢",
+          '<div class="product-card"><h3>' +
+            esc(p.name) +
+            '</h3><div class="product-meta">條碼：' +
+            esc(p.barcode) +
+            '</div><div class="price-summary"><div class="price-stat"><strong>' +
+            min +
+            '元</strong><span>最低價</span></div><div class="price-stat"><strong>' +
+            max +
+            '元</strong><span>最高價</span></div><div class="price-stat"><strong>' +
+            (minRecord ? esc(minRecord.date) : "—") +
+            '</strong><span>最低價日期</span></div><div class="price-stat"><strong>' +
+            (latest ? latest.price + " 元" : "—") +
+            '</strong><span>最新價格</span></div></div></div><h3>價格紀錄</h3>' +
+            (rs.length
+              ? rs
+                  .map(
+                    (r) =>
+                      '<div class="price-row"><div>' +
+                      esc(r.date) +
+                      (r.store
+                        ? '<div class="muted">' + esc(r.store) + "</div>"
+                        : "") +
+                      '</div><strong>' +
+                      esc(r.price) +
+                      ' 元</strong></div>',
+                  )
+                  .join("")
+              : '<p class="muted">尚無價格紀錄。</p>') +
+            '<div class="actions"><button class="secondary" id="closeTrend">關閉</button></div>',
+        );
+
+        $("closeTrend").onclick = closeModal;
+      }     
       function renderTrend(p = currentProduct) {
         if (!p) {
           $("trendContent").innerHTML =
@@ -1258,10 +1315,10 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
           prices = rs.map((r) => r.price),
           min = prices.length ? Math.min(...prices) : 0,
           max = prices.length ? Math.max(...prices) : 0,
-          avg = prices.length
-            ? (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2)
-            : 0,
-          recent = prices.length ? prices[0] : 0;
+          minRecord = rs.length
+            ? rs.reduce((best, r) => (r.price < best.price ? r : best), rs[0])
+            : null,
+          recent = rs.length ? rs[0] : null;
         $("trendContent").innerHTML =
           '<div class="product-card"><h3>' +
           esc(p.name) +
@@ -1272,10 +1329,10 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
           '</strong><span>最低</span></div><div class="price-stat"><strong>' +
           max +
           '</strong><span>最高</span></div><div class="price-stat"><strong>' +
-          avg +
-          '</strong><span>平均</span></div><div class="price-stat"><strong>' +
-          recent +
-          "</strong><span>最近</span></div></div></div><h3>歷史價格</h3>" +
+          (minRecord ? esc(minRecord.date) : "—") +
+          '</strong><span>最低價日期</span></div><div class="price-stat"><strong>' +
+          (recent ? recent.price : "—") +
+          '</strong><span>最新價格</span></div></div><h3>價格紀錄</h3>' +
           (rs
             .map(
               (r) =>
@@ -1393,20 +1450,20 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
           throw Error("其他條碼不可重複。");
         return cleanCodes(values, main);
       }
-      function productForm(p) {
+            function productForm(p) {
         modal(
           "編輯商品",
-          '<label>商品名稱</label><input id="n" value="' +
+          '<div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">商品名稱</label><input id="n" value="' +
             esc(p.name) +
-            '"><label>品牌</label><input id="b" value="' +
+            '"></div><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">品牌</label><input id="b" value="' +
             esc(p.brand) +
-            '"><label>備註</label><textarea id="note" rows="3" placeholder="規格、容量、顏色、型號、包裝數等">' +
-            esc(p.note || "") +
-            '</textarea><label>圖片網址</label><input id="i" value="' +
+            '" placeholder="選填"></div><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">網路圖片網址（選填）</label><input id="i" type="url" value="' +
             esc(p.imageUrl) +
-            '"><label>本機照片</label><input id="f" type="file" accept="image/*">' +
+            '" placeholder="http://"><p style="margin:6px 0 0;color:var(--muted);font-size:.82rem;line-height:1.45">貼上可公開讀取的圖片網址；若同時選擇本機照片，會優先顯示本機照片。</p></div><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">本機照片（選填）</label><input id="f" type="file" accept="image/*"></div>' +
             aliasFields(p.aliasBarcodes) +
-            '<div class="actions"><button class="primary" id="s">儲存</button><button class="secondary" id="c">取消</button></div>',
+            '<div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">備註（選填）</label><textarea id="note" rows="2" style="display:block;width:100%;min-height:58px;resize:vertical" placeholder="規格、容量、顏色、型號、包裝數等">' +
+            esc(p.note || "") +
+            '</textarea></div><div class="actions"><button class="primary" id="s">儲存</button><button class="secondary" id="c">取消</button></div>',
         );
         bindAliasEditor();
         $("s").onclick = async () => {
@@ -1524,10 +1581,12 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
         navigate("page-list");
         renderList();
       }
-      async function lookup() {
+            async function lookup() {
         if (busy) return;
+
         const c = $("barcode").value.trim();
         if (!validCode(c)) return alert("請輸入 8–14 位數字條碼");
+
         const old = find(c);
         if (old) {
           $("status").textContent = "已找到本機既有商品。";
@@ -1535,17 +1594,22 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
           navigate("page-detail");
           return;
         }
+
         $("status").textContent = "正在查詢網路商品資料…";
         $("searchBtn").disabled = true;
+
         let data = {},
           got = false;
+
         try {
           const r = await fetch(
             "https://world.openfoodfacts.org/api/v2/product/" +
               encodeURIComponent(c) +
               ".json?fields=product_name,product_name_zh,product_name_en,brands,image_front_small_url",
           );
+
           if (!r.ok) throw Error("HTTP " + r.status);
+
           data = await r.json();
           got = !!data.product;
         } catch (e) {
@@ -1553,10 +1617,12 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
         } finally {
           $("searchBtn").disabled = false;
         }
+
         const p = data.product || {},
           name = p.product_name_zh || p.product_name_en || p.product_name || "",
           brand = p.brands || "",
           image = p.image_front_small_url || "";
+
         modal(
           "新增商品｜" + c,
           '<p class="lookup-result"><strong>' +
@@ -1567,28 +1633,34 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
             ) +
             '</strong><span class="muted">條碼：' +
             esc(c) +
-            '｜資料來源：Open Food Facts</span></p><label>商品名稱 *</label><input id="n" value="' +
+            '｜資料來源：Open Food Facts</span></p><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">商品名稱 *</label><input id="n" value="' +
             esc(name) +
-            '" placeholder="可在名稱中加入容量、型號或數量"><label>品牌</label><input id="b" value="' +
+            '" placeholder="可在名稱中加入容量、型號或數量"></div><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">品牌</label><input id="b" value="' +
             esc(brand) +
-            '" placeholder="選填"><label>備註</label><textarea id="note" rows="3" placeholder="規格、容量、顏色、型號、包裝數等"></textarea><label>圖片網址</label><input id="i" value="' +
+            '" placeholder="選填"></div><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">網路圖片網址（選填）</label><input id="i" type="url" value="' +
             esc(image) +
-            '" placeholder="選填"><label>新增本機照片</label><input id="f" type="file" accept="image/*" capture="environment">' +
+            '" placeholder="http://"><p style="margin:6px 0 0;color:var(--muted);font-size:.82rem;line-height:1.45">貼上可公開讀取的圖片網址；若同時選擇本機照片，會優先顯示本機照片。</p></div><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">新增本機照片（選填）</label><input id="f" type="file" accept="image/*" capture="environment"></div>' +
             aliasFields([]) +
-            '<p class="muted">可從相簿選圖；支援的手機會提供拍照選項。之後「同步本機與雲端」會先同步 JPEG，再更新商品資料。</p><div class="actions"><button class="primary" id="s">儲存商品</button><button class="secondary" id="c">取消</button></div>',
+            '<p class="muted">可從相簿選圖；支援的手機會提供拍照選項。之後「同步本機與雲端」會先同步 JPEG，再更新商品資料。</p><div style="margin:12px 0"><label style="display:block;margin-bottom:6px;font-weight:700">備註（選填）</label><textarea id="note" rows="2" style="display:block;width:100%;min-height:58px;resize:vertical" placeholder="規格、容量、顏色、型號、包裝數等"></textarea></div><div class="actions"><button class="primary" id="s">儲存商品</button><button class="secondary" id="c">取消</button></div>',
         );
+
         bindAliasEditor();
+
         $("s").onclick = async () => {
           try {
             const n = $("n").value.trim();
             if (!n) return alert("請輸入商品名稱");
+
             let meta = null;
             const aliases = readAliases(c, null),
               f = $("f").files[0];
+
             if (f) {
               const z = await compress(f),
                 id = "product-photo-" + c + "-" + makeId();
+
               await putBlob(id, z.blob);
+
               meta = {
                 id,
                 stored: "indexeddb",
@@ -1600,6 +1672,7 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
                 version: Date.now(),
               };
             }
+
             products.push({
               barcode: c,
               name: n,
@@ -1620,6 +1693,7 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
               deletedAt: "",
               records: [],
             });
+
             save();
             closeModal();
             $("status").textContent = "已新增商品「" + n + "」。";
@@ -1630,6 +1704,7 @@ nav.bottom button{display:flex;flex-direction:column;align-items:center;justify-
             alert(e.message);
           }
         };
+
         $("c").onclick = () => {
           closeModal();
           $("status").textContent = "已取消新增商品。";
