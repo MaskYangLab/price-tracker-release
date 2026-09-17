@@ -1,9 +1,91 @@
 {
   "schemaVersion": 1,
   "type": "price-tracker-public-release",
-  "releaseVersion": "2026-09-11-01",
-  "releasedAt": "2026-09-11T17:00:00+08:00",
-  "productCount": 0,
-  "recordCount": 0,
-  "products": []
+  "releaseVersion": "2026-09-17-test-01",
+  "releasedAt": "2026-09-17T16:22:00+08:00",
+  "productCount": 3,
+  "recordCount": 4,
+  "products": [
+    {
+      "barcode": "4719990000001",
+      "name": "公用更新測試商品 A",
+      "brand": "測試品牌",
+      "aliasBarcodes": [],
+      "note": "用於測試空白本機資料的公用更新。",
+      "records": [
+        {
+          "id": "public-a-001",
+          "price": 49,
+          "store": "測試賣場",
+          "date": "2026-09-15",
+          "createdAt": "2026-09-15T10:00:00+08:00",
+          "updatedAt": "2026-09-15T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-15T10:00:00+08:00",
+      "updatedAt": "2026-09-15T10:00:00+08:00",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4719990000002",
+      "name": "公用更新測試商品 B",
+      "brand": "測試品牌",
+      "aliasBarcodes": [
+        "4719990000102"
+      ],
+      "note": "用於測試同條碼商品的本機名稱保留規則。",
+      "records": [
+        {
+          "id": "public-b-001",
+          "price": 89,
+          "store": "測試超市",
+          "date": "2026-09-14",
+          "createdAt": "2026-09-14T10:00:00+08:00",
+          "updatedAt": "2026-09-14T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-14T10:00:00+08:00",
+      "updatedAt": "2026-09-14T10:00:00+08:00",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4719990000003",
+      "name": "公用更新測試商品 C",
+      "brand": "測試品牌",
+      "aliasBarcodes": [],
+      "note": "用於測試價格紀錄合併與去重。",
+      "records": [
+        {
+          "id": "public-c-001",
+          "price": 59,
+          "store": "測試量販店",
+          "date": "2026-09-13",
+          "createdAt": "2026-09-13T10:00:00+08:00",
+          "updatedAt": "2026-09-13T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        },
+        {
+          "id": "public-c-002",
+          "price": 65,
+          "store": "測試量販店",
+          "date": "2026-09-16",
+          "createdAt": "2026-09-16T10:00:00+08:00",
+          "updatedAt": "2026-09-16T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-13T10:00:00+08:00",
+      "updatedAt": "2026-09-16T10:00:00+08:00",
+      "isDeleted": false,
+      "deletedAt": ""
+    }
+  ]
 }
