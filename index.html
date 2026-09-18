@@ -836,6 +836,114 @@
           height: 20px;
         }
       }
+
+      /* ===== 商品檢視頁：操作群組試作 ===== */
+
+      .product-action-groups {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      /* 兩個操作群組的共同外框 */
+      .action-group {
+        padding: 13px;
+        border: 1px solid #d6dee8;
+        border-radius: 14px;
+        background: #ffffff;
+      }
+
+      /* 價格管理：非常淡的藍色底與邊框 */
+      .action-group-price {
+        border-color: #bfdbfe;
+        background: #f8fbff;
+      }
+
+      /* 商品管理：中性淡灰底與邊框 */
+      .action-group-product {
+        border-color: #d6dee8;
+        background: #f8fafc;
+      }
+
+      /* 外框中的小標題 */
+      .action-group-title {
+        margin: 0 0 10px;
+        color: #475569;
+        font-size: 0.92rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      /* 同一個外框內的兩顆按鈕 */
+      .action-group-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      /* 手機操作：按鈕至少 44px 高 */
+      .action-group-buttons button {
+        min-height: 44px;
+      }
+
+      /* 返回列表按鈕獨立顯示 */
+      .detail-back-action {
+        display: flex;
+        margin-top: 2px;
+      }
+
+      .detail-back-action button {
+        min-height: 44px;
+      }
+
+      /* iPhone 直立：同組兩顆按鈕各佔一半寬度 */
+      @media (max-width: 420px) {
+        .action-group-buttons button {
+          flex: 1 1 calc(50% - 5px);
+          min-width: 0;
+        }
+      }
+
+      /* 返回列表按鈕獨立顯示 */
+      .detail-back-action {
+        display: flex;
+        margin-top: 2px;
+      }
+
+      .detail-back-action button {
+        min-height: 44px;
+      }
+
+      /* iPhone 直立：同組兩顆按鈕各佔一半寬度 */
+      @media (max-width: 420px) {
+        .action-group-buttons button {
+          flex: 1 1 calc(50% - 5px);
+          min-width: 0;
+        }
+      }
+
+      /* ===== 返回商品列表：較明顯的導覽按鈕 ===== */
+      .detail-back-action {
+        margin-top: 4px;
+      }
+
+      .detail-back-button {
+        width: 100%;
+        min-height: 48px;
+        padding: 12px 16px;
+        border: 1px solid #93c5fd;
+        border-radius: 12px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-weight: 700;
+        text-align: center;
+        box-shadow: 0 1px 2px rgba(29, 78, 216, 0.08);
+      }
+
+      .detail-back-button:active {
+        background: #dbeafe;
+        transform: translateY(1px);
+      }
     </style>
   </head>
 
@@ -894,23 +1002,21 @@
         </div>
         <div class="sync-grid">
           <div class="sync-stat">
-            <strong id="localProductCount">0</strong>本機可見商品
+            <strong id="localProductCount">0</strong>本機商品
           </div>
           <div class="sync-stat">
             <strong id="localPhotoCount">0</strong>本機照片
           </div>
-          <div class="sync-stat">
+          <div class="sync-stat hidden">
             <strong id="cloudState">未登入</strong>Google Drive 狀態
           </div>
-          <div class="sync-stat">
+          <div class="sync-stat hidden">
             <strong id="cloudUpdated">—</strong>雲端資料更新時間
           </div>
         </div>
-        <p id="cloudFileInfo" class="muted">尚未檢查雲端檔案。</p>
+        <p id="cloudFileInfo" class="muted">尚未檢查雲端資料。</p>
         <h3 class="sync-section-title">安全同步</h3>
-        <p class="sync-section-help">
-          先合併本機與雲端資料，再更新雲端；商品、價格與照片都會處理。
-        </p>
+        <p class="sync-section-help">先下載並合併資料，再上傳更新。</p>
         <div class="auth-actions">
           <button class="primary major" id="googleAuthBtn" disabled>
             Google 授權載入中…
@@ -924,14 +1030,28 @@
         </div>
         <div id="syncPreview" class="sync-preview hidden"></div>
         <h3 class="sync-section-title">同步工具</h3>
-        <p class="sync-section-help">檢查雲端狀態或照片同步情況。</p>
+        <p class="sync-section-help">查看雲端資料或照片同步狀態。</p>
         <div class="sync-tools">
           <button class="secondary" id="checkCloudBtn" disabled>
-            檢查雲端狀態</button
-          ><button class="secondary" id="scanPhotosBtn" disabled>
+            檢查雲端狀態
+          </button>
+          <button class="secondary" id="restoreCloudBtn" disabled>
+            還原備份資料
+          </button>
+          <button class="secondary" id="scanPhotosBtn" disabled>
             檢查照片同步
           </button>
         </div>
+
+        <button class="secondary" id="toggleDiagnosticBtn" type="button">
+          資料同步紀錄
+        </button>
+
+        <section id="syncDiagnosticSection" class="sync-diagnostic hidden">
+          <h3>同步診斷</h3>
+          <div id="diagnostic" class="diagnostic">頁面已載入。</div>
+          <ul id="history" class="history"></ul>
+        </section>
       </section>
 
       <section class="cloud-update-section" aria-labelledby="cloudUpdateTitle">
@@ -1016,12 +1136,6 @@
           </div>
         </div>
         <div id="publicUpdatePreview" class="sync-preview hidden"></div>
-      </section>
-
-      <section class="sync-diagnostic">
-        <h3>同步診斷</h3>
-        <div id="diagnostic" class="diagnostic">頁面已載入。</div>
-        <ul id="history" class="history"></ul>
       </section>
     </section>
     <div id="modal" class="modal hidden">
@@ -1255,7 +1369,7 @@
       function candidateArray(v) {
         if (Array.isArray(v)) return v;
         if (!v || typeof v !== "object") return null;
-        for (const k of ["products", "items", "data", "list"])
+        for (const k of ["products", "items", "data", "list", "m"])
           if (Array.isArray(v[k])) return v[k];
         if (v.database && Array.isArray(v.database.products))
           return v.database.products;
@@ -1291,11 +1405,13 @@
             return [];
           }
           storageNotes.push(
-            "✓ 從 " +
+            "✓ 本機資料載入成功：從 " +
               KEY +
-              " 安全讀取 " +
+              " 讀取 " +
               out.length +
-              " 件商品；首次載入未寫回 localStorage。",
+              " 筆商品資料，其中可見 " +
+              out.filter((p) => !deleted(p)).length +
+              " 件；未在載入時改寫本機資料。",
           );
           return out;
         } catch (e) {
@@ -1311,6 +1427,13 @@
         }
       }
       function save() {
+        if (!Array.isArray(products)) {
+          storageSafe = false;
+          throw new Error(
+            "本機資料格式錯誤：products 必須是商品陣列，已停止寫入",
+          );
+        }
+
         localStorage.setItem(KEY, JSON.stringify(products));
       }
       function live() {
@@ -1440,11 +1563,24 @@
           const h = document.createElement("div");
           h.className = "card-head";
           h.append(thumb(p, true));
+
           const x = document.createElement("div");
           x.className = "card-text";
-          const lr = liveRecords(p),
-            highest = lr.length ? Math.max(...lr.map((r) => r.price)) : "—",
-            lowest = lr.length ? Math.min(...lr.map((r) => r.price)) : "—";
+
+          const lr = liveRecords(p);
+          const highest = lr.length
+            ? Math.max(...lr.map((r) => Number(r.price)))
+            : "—";
+          const lowest = lr.length
+            ? Math.min(...lr.map((r) => Number(r.price)))
+            : "—";
+
+          const range =
+            highest === "—"
+              ? "尚無價格紀錄"
+              : highest === lowest
+                ? "價格：" + lowest + " 元"
+                : "價格區間：" + lowest + " ～ " + highest + " 元";
           x.innerHTML =
             "<strong>" +
             esc(p.name) +
@@ -1456,8 +1592,8 @@
                 esc(p.aliasBarcodes.join("、")) +
                 "</span>"
               : "") +
-            '<div class="muted">最高價：' +
-            (highest === "—" ? "—" : highest + " 元") +
+            '<div class="muted">' +
+            range +
             '</div><div class="updated-time">最近修改：' +
             dt(p.updatedAt) +
             "</div>";
@@ -1522,7 +1658,25 @@
               esc(p.aliasBarcodes.join("、")) +
               "</div></div>"
             : "") +
-          '<div class="actions"><button class="primary" id="add">新增價格</button><button class="secondary" id="trend">價格趨勢</button><button class="secondary" id="edit">編輯商品</button><button class="danger" id="remove">刪除商品</button><button class="secondary" id="back">返回列表</button></div>' +
+          '<div class="product-action-groups">' +
+          '<section class="action-group action-group-price">' +
+          '<div class="action-group-title">價格管理</div>' +
+          '<div class="action-group-buttons">' +
+          '<button class="primary" id="add">新增價格</button>' +
+          '<button class="secondary" id="trend">價格趨勢</button>' +
+          "</div>" +
+          "</section>" +
+          '<section class="action-group action-group-product">' +
+          '<div class="action-group-title">商品管理</div>' +
+          '<div class="action-group-buttons">' +
+          '<button class="secondary" id="edit">編輯商品</button>' +
+          '<button class="danger" id="remove">刪除商品</button>' +
+          "</div>" +
+          "</section>" +
+          '<div class="detail-back-action">' +
+          '<button class="secondary detail-back-button" id="back">← 返回商品列表</button>' +
+          "</div>" +
+          "</div>" +
           (rs
             .map(
               (r) =>
@@ -2020,7 +2174,11 @@
         $("googleAuthBtn").textContent = on ? "登出 Google" : "登入 Google";
         $("googleAuthBtn").className = on ? "secondary major" : "primary major";
         $("safeSyncBtn").disabled = !on || !storageSafe || busy;
-        for (const id of ["checkCloudBtn", "scanPhotosBtn"]) {
+        for (const id of [
+          "checkCloudBtn",
+          "restoreCloudBtn",
+          "scanPhotosBtn",
+        ]) {
           const el = $(id);
           if (el) {
             el.disabled = !on || busy;
@@ -2031,11 +2189,11 @@
         }
         $("cloudState").textContent = on ? "已登入" : "未登入";
         if (on) {
-          msg("Google 同步已授權；安全同步功能已啟用。", "success");
+          msg("已登入 Google。", "success");
         } else if (!oauth) {
           msg("正在載入 Google 授權元件…", "warning");
         } else {
-          msg("Google 授權元件已就緒。請按「登入 Google」。", "warning");
+          msg("請登入 Google 以啟用同步功能。", "warning");
         }
       }
       function h(x = {}) {
@@ -2101,17 +2259,111 @@
         try {
           setBusy(true);
           progress("正在檢查雲端狀態", "讀取 products.json 中…");
+
           const f = await findFile(FILE);
           cloudInfo(f);
-          $("cloudState").textContent = f ? "已找到資料" : "尚未初始化";
-          $("cloudUpdated").textContent = f ? dt(f.modifiedTime) : "—";
+
+          if (!f) {
+            $("cloudState").textContent = "尚未初始化";
+            $("cloudUpdated").textContent = "—";
+            $("cloudProductCount").textContent = "0";
+
+            msg("雲端尚無 products.json。", "warning");
+            history("已檢查雲端資料：尚未初始化。");
+            return;
+          }
+
+          $("cloudState").textContent = "已找到資料";
+          $("cloudUpdated").textContent = dt(f.modifiedTime);
+
+          const cloudProducts = await readJSON(f.id);
+
+          if (!Array.isArray(cloudProducts)) {
+            throw new Error("雲端 products.json 格式錯誤：商品資料不是陣列");
+          }
+
+          $("cloudProductCount").textContent = String(cloudProducts.length);
+
           msg(
-            f ? "已找到雲端 products.json。" : "雲端尚無 products.json。",
-            f ? "success" : "warning",
+            "已找到雲端 products.json，共 " +
+              cloudProducts.length +
+              " 件商品。",
+            "success",
           );
-          history("已檢查雲端資料。");
+          history("已檢查雲端資料：" + cloudProducts.length + " 件商品。");
         } catch (e) {
           msg("檢查失敗：" + e.message, "error");
+          log("檢查雲端失敗：" + e.message);
+        } finally {
+          progress();
+          setBusy(false);
+        }
+      }
+
+      async function restoreFromCloud() {
+        if (busy) return;
+
+        const ok = confirm(
+          "要從雲端還原本機資料嗎？\n\n" +
+            "目前本機的商品與價格紀錄將被雲端資料取代。\n" +
+            "此操作不會上傳、修改或刪除雲端備份資料。",
+        );
+
+        if (!ok) return;
+
+        try {
+          setBusy(true);
+          progress(
+            "正在從雲端復原本機資料",
+            "讀取 Google Drive products.json…",
+          );
+
+          const f = await findFile(FILE);
+
+          if (!f) {
+            throw new Error("雲端找不到 products.json，無法復原");
+          }
+
+          const data = await (
+            await drive(
+              "https://www.googleapis.com/drive/v3/files/" +
+                f.id +
+                "?alt=media",
+            )
+          ).json();
+
+          if (!Array.isArray(data.products)) {
+            throw new Error("雲端 products.json 格式錯誤：缺少 products 陣列");
+          }
+
+          const restored = data.products.map(norm);
+
+          if (!restored.length) {
+            throw new Error("雲端 products.json 沒有可復原的商品");
+          }
+
+          products = restored;
+          storageSafe = true;
+          storageNotes = [];
+          save();
+          renderList();
+          stats();
+
+          cloudInfo(f);
+          $("cloudState").textContent = "已復原本機";
+          $("cloudUpdated").textContent = dt(f.modifiedTime);
+          if ($("cloudProductCount")) {
+            $("cloudProductCount").textContent = String(restored.length);
+          }
+
+          msg(
+            "已從 Google Drive 復原 " + restored.length + " 件商品到本機。",
+            "success",
+          );
+          history("從雲端復原本機資料：" + restored.length + " 件商品。");
+        } catch (e) {
+          msg("雲端復原失敗：" + e.message, "error");
+          log("雲端復原失敗：" + e.message);
         } finally {
           progress();
           setBusy(false);
@@ -2496,6 +2748,15 @@
       $("googleAuthBtn").onclick = authToggle;
       $("safeSyncBtn").onclick = () => authorize("safe");
       $("checkCloudBtn").onclick = check;
+      $("restoreCloudBtn").onclick = restoreFromCloud;
+      $("toggleDiagnosticBtn").onclick = () => {
+        const section = $("syncDiagnosticSection");
+        const isHidden = section.classList.toggle("hidden");
+
+        $("toggleDiagnosticBtn").textContent = isHidden
+          ? "資料同步紀錄"
+          : "隱藏資料同步紀錄";
+      };
       $("scanPhotosBtn").onclick = async () => {
         try {
           setBusy(true);
@@ -2610,6 +2871,7 @@
       products = load();
       storageNotes.forEach(log);
       renderList();
+      stats();
       init();
 
       // ========== 公用資料庫更新功能 ==========
@@ -2698,7 +2960,13 @@
         try {
           // 合併公用商品到本機
           const merged = mergePlans(products, publicData.products);
-          products = merged;
+          const appliedVersion = publicData.releaseVersion;
+
+          if (!Array.isArray(merged.m)) {
+            throw new Error("公用更新合併失敗：合併結果不是商品陣列");
+          }
+
+          products = merged.m;
           save();
           renderList();
 
@@ -2706,7 +2974,7 @@
           publicData = null;
           applyPublicUpdateBtn.disabled = true;
           msg("公用更新合併成功", "success");
-          history("合併公用更新：" + publicData.releaseVersion);
+          history("合併公用更新：" + appliedVersion);
           stats();
         } catch (e) {
           msg(e.message, "error");
