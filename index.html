@@ -1434,7 +1434,38 @@
           );
         }
 
-        localStorage.setItem(KEY, JSON.stringify(products));
+        const raw = JSON.stringify(products);
+        const expectedCount = products.length;
+
+        let prepared;
+        try {
+          prepared = JSON.parse(raw);
+        } catch (e) {
+          storageSafe = false;
+          throw new Error("本機資料無法轉換為 JSON，已停止寫入。");
+        }
+
+        if (!Array.isArray(prepared) || prepared.length !== expectedCount) {
+          storageSafe = false;
+          throw new Error("本機資料寫入前驗證失敗，已停止寫入。");
+        }
+
+        localStorage.setItem(KEY, raw);
+
+        const savedRaw = localStorage.getItem(KEY);
+
+        let saved;
+        try {
+          saved = JSON.parse(savedRaw);
+        } catch (e) {
+          storageSafe = false;
+          throw new Error("本機資料寫入後驗證失敗，請勿繼續同步。");
+        }
+
+        if (!Array.isArray(saved) || saved.length !== expectedCount) {
+          storageSafe = false;
+          throw new Error("本機資料寫入後格式或筆數不符，請勿繼續同步。");
+        }
       }
       function live() {
         return products.filter((p) => !deleted(p));
