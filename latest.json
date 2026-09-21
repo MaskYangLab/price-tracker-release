@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "type": "price-tracker-public-release",
-  "releaseVersion": "2026-09-21-test-05",
-  "releasedAt": "2026-09-21T16:30:00+08:00",
+  "releaseVersion": "2026-09-21-test-06",
+  "releasedAt": "2026-09-21T17:00:00+08:00",
   "productCount": 1,
   "recordCount": 1,
   "products": [
@@ -11,7 +11,7 @@
       "name": "公用更新測試商品 E",
       "brand": "測試品牌",
       "aliasBarcodes": [],
-      "note": "新版測試：updatedAt 晚於本機刪除時間，驗證重新啟用規則。",
+      "note": "新版測試：updatedAt 設為 17:00，驗證修正後的合併邏輯能否重新啟用已刪除商品。",
       "records": [
         {
           "id": "public-e-001",
@@ -19,13 +19,13 @@
           "store": "測試賣場",
           "date": "2026-09-21",
           "createdAt": "2026-09-21T15:10:00+08:00",
-          "updatedAt": "2026-09-21T16:30:00+08:00",
+          "updatedAt": "2026-09-21T17:00:00+08:00",
           "isDeleted": false,
           "deletedAt": ""
         }
       ],
       "createdAt": "2026-09-21T15:10:00+08:00",
-      "updatedAt": "2026-09-21T16:30:00+08:00",
+      "updatedAt": "2026-09-21T17:00:00+08:00",
       "isDeleted": false,
       "deletedAt": ""
     }
