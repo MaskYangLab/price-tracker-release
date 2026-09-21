@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "type": "price-tracker-public-release",
-  "releaseVersion": "2026-09-21-test-07",
-  "releasedAt": "2026-09-21T17:25:00+08:00",
+  "releaseVersion": "2026-09-21-test-08",
+  "releasedAt": "2026-09-21T17:30:00+08:00",
   "productCount": 1,
   "recordCount": 1,
   "products": [
@@ -19,13 +19,13 @@
           "store": "測試賣場",
           "date": "2026-09-21",
           "createdAt": "2026-09-21T15:10:00+08:00",
-          "updatedAt": "2026-09-21T17:25:00+08:00",
+          "updatedAt": "2026-09-21T17:30:00+08:00",
           "isDeleted": false,
           "deletedAt": ""
         }
       ],
       "createdAt": "2026-09-21T15:10:00+08:00",
-      "updatedAt": "2026-09-21T17:25:00+08:00",
+      "updatedAt": "2026-09-21T17:30:00+08:00",
       "isDeleted": false,
       "deletedAt": ""
     }
