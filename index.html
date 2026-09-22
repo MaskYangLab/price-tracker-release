@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1"
     />
-    <title>我的價格紀錄｜v1.1.6</title>
+    <title>我的價格紀錄｜v1.1.13</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
       :root {
@@ -1011,7 +1011,7 @@
       <h1>價格查詢</h1>
       <div class="version">
         <strong>我的價格紀錄</strong><br />版本
-        v1.1.6｜條碼掃描・商品管理・價格追蹤・雲端更新
+        <span id="appVersion">v1.1.13</span>｜條碼掃描・商品管理・價格追蹤・雲端更新
       </div>
       <button class="primary" id="startCamera">開啟相機掃描</button
       ><button class="secondary hidden" id="stopCamera">關閉相機</button>
@@ -1258,6 +1258,11 @@
       </button>
     </nav>
     <script>
+      const APP_VERSION = "v1.1.13";
+      document.title = `我的價格紀錄｜${APP_VERSION}`;
+      const appVersionEl = document.getElementById("appVersion");
+      if (appVersionEl) appVersionEl.textContent = APP_VERSION;
+
       const CLIENT_ID =
           "228612325011-u1uoard7b2its8h6o1sd9c7bb1jb7lac.apps.googleusercontent.com",
         SCOPE = "https://www.googleapis.com/auth/drive.appdata",
