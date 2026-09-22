@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "type": "price-tracker-public-release",
-  "releaseVersion": "2026-09-21-test-08",
-  "releasedAt": "2026-09-21T17:30:00+08:00",
-  "productCount": 1,
-  "recordCount": 1,
+  "releaseVersion": "2026-09-22-test-09",
+  "releasedAt": "2026-09-22T16:13:00+08:00",
+  "productCount": 2,
+  "recordCount": 2,
   "products": [
     {
       "barcode": "4719990000005",
       "name": "公用更新測試商品 E",
       "brand": "測試品牌",
       "aliasBarcodes": [],
-      "note": "新版測試：updatedAt 設為 17:25，晚於本機刪除時間 17:16，驗證修正後的合併邏輯能否重新啟用已刪除商品。",
+      "note": "保留 test-08 的測試商品；本機已刪除時，公用更新不得讓它自動重新出現在列表。",
       "records": [
         {
           "id": "public-e-001",
@@ -26,6 +26,29 @@
       ],
       "createdAt": "2026-09-21T15:10:00+08:00",
       "updatedAt": "2026-09-21T17:30:00+08:00",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4719990000012",
+      "name": "公用更新測試商品 F",
+      "brand": "測試品牌",
+      "aliasBarcodes": [],
+      "note": "test-09 新增商品：用於驗證公用更新可新增從未存在於本機的商品，並在重整後保留。",
+      "records": [
+        {
+          "id": "public-f-001",
+          "price": 129,
+          "store": "測試賣場",
+          "date": "2026-09-22",
+          "createdAt": "2026-09-22T16:13:00+08:00",
+          "updatedAt": "2026-09-22T16:13:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-22T16:13:00+08:00",
+      "updatedAt": "2026-09-22T16:13:00+08:00",
       "isDeleted": false,
       "deletedAt": ""
     }
