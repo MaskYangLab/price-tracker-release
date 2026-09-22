@@ -944,6 +944,65 @@
         background: #dbeafe;
         transform: translateY(1px);
       }
+
+      /* v1.1.12：公用更新完成 Popup */
+      .public-update-success-dialog {
+        width: min(430px, calc(100vw - 32px));
+        padding: 26px 24px 22px;
+        border: 0;
+        border-radius: 18px;
+        color: var(--text);
+        background: #ffffff;
+        text-align: center;
+        box-shadow: 0 24px 64px rgba(15, 23, 42, 0.28);
+      }
+      .public-update-success-dialog::backdrop {
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(2px);
+      }
+      .public-update-success-icon {
+        display: grid;
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 14px;
+        place-items: center;
+        border-radius: 50%;
+        color: var(--success-text);
+        background: var(--success-bg);
+        font-size: 29px;
+        font-weight: 800;
+      }
+      .public-update-success-dialog h2 {
+        margin: 0 0 10px;
+        color: var(--success-text);
+        font-size: 1.2rem;
+      }
+      .public-update-success-dialog p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .public-update-success-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 22px;
+      }
+      .public-update-success-actions button {
+        min-height: 46px;
+      }
+      .public-update-success-dialog button:focus-visible {
+        outline: 3px solid rgba(23, 109, 165, 0.35);
+        outline-offset: 2px;
+      }
+      @media (max-width: 420px) {
+        .public-update-success-dialog {
+          padding: 22px 18px 18px;
+        }
+        .public-update-success-actions {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
 
@@ -1144,6 +1203,27 @@
         <div id="modalBody"></div>
       </div>
     </div>
+
+    <!-- v1.1.12：公用更新完成提示 -->
+    <dialog
+      id="publicUpdateSuccessDialog"
+      class="public-update-success-dialog"
+      aria-labelledby="publicUpdateSuccessTitle"
+      aria-describedby="publicUpdateSuccessText"
+    >
+      <div class="public-update-success-icon" aria-hidden="true">✓</div>
+      <h2 id="publicUpdateSuccessTitle">公用更新已完成</h2>
+      <p id="publicUpdateSuccessText"></p>
+      <div class="public-update-success-actions">
+        <button type="button" class="secondary" id="stayOnPublicUpdateBtn">
+          留在這裡
+        </button>
+        <button type="button" class="primary" id="viewUpdatedProductsBtn">
+          查看商品列表
+        </button>
+      </div>
+    </dialog>
+
     <nav class="bottom" aria-label="主要導覽">
       <button
         data-page="page-scan"
@@ -2970,13 +3050,35 @@
         };
       }
 
+      function showPublicUpdateSuccess(version, productCount, recordCount) {
+        const dialog = $("publicUpdateSuccessDialog");
+        $("publicUpdateSuccessText").innerHTML =
+          "已套用版本：" +
+          esc(version) +
+          "<br />已處理：" +
+          productCount +
+          " 項商品、" +
+          recordCount +
+          " 筆價格紀錄。<br />原有商品、照片與私人備註已保留。";
+
+        $("stayOnPublicUpdateBtn").onclick = () => dialog.close();
+        $("viewUpdatedProductsBtn").onclick = () => {
+          dialog.close();
+          navigate("page-list");
+        };
+
+        dialog.showModal();
+      }
+
       async function applyPublicUpdate() {
         if (!publicData) return;
         if (busy) return;
 
         if (
           !confirm(
-            "確定要下載並合併公用更新嗎？\n\n這會將公用商品與價格紀錄合併到你的本機資料。\n\n本機商品名稱、照片與私人備註不會被覆蓋。",
+            "確定要下載並合併公用更新嗎？\n\n" +
+              "這會將公用商品與價格紀錄合併到你的本機資料。\n\n" +
+              "本機商品名稱、照片與私人備註不會被覆蓋。",
           )
         ) {
           return;
@@ -2989,7 +3091,6 @@
         );
 
         try {
-          // 合併公用商品到本機
           const merged = mergePlans(products, publicData.products);
           const appliedVersion = publicData.releaseVersion;
 
@@ -2997,16 +3098,81 @@
             throw new Error("公用更新合併失敗：合併結果不是商品陣列");
           }
 
+          const addedProductCount = Number(merged.add) || 0;
+          const mergedRecordCount = Number(merged.rec) || 0;
+
+          const publicBarcodes = publicData.products
+            .map((product) => String(product.barcode ?? "").trim())
+            .filter(Boolean);
+
           products = merged.m;
           save();
+
+          const savedRaw = localStorage.getItem(KEY);
+
+          let savedProducts;
+          try {
+            savedProducts = JSON.parse(savedRaw);
+          } catch (e) {
+            throw new Error("公用更新寫入驗證失敗：無法讀回本機商品資料");
+          }
+
+          if (!Array.isArray(savedProducts)) {
+            throw new Error(
+              "公用更新寫入驗證失敗：本機商品資料不是標準商品陣列",
+            );
+          }
+
+          const savedBarcodes = new Set(
+            savedProducts
+              .map((product) => String(product.barcode ?? "").trim())
+              .filter(Boolean),
+          );
+
+          const missingBarcodes = publicBarcodes.filter(
+            (barcode) => !savedBarcodes.has(barcode),
+          );
+
+          if (missingBarcodes.length) {
+            throw new Error(
+              "公用更新寫入驗證失敗：找不到條碼 " + missingBarcodes.join("、"),
+            );
+          }
+
           renderList();
 
           publicUpdatePreview.className = "sync-preview hidden";
           publicData = null;
           applyPublicUpdateBtn.disabled = true;
-          msg("公用更新合併成功", "success");
-          history("合併公用更新：" + appliedVersion);
+
+          msg(
+            "公用更新已完成：已套用 " +
+              appliedVersion +
+              "；實際新增 " +
+              addedProductCount +
+              " 項商品、合併 " +
+              mergedRecordCount +
+              " 筆價格紀錄。",
+            "success",
+          );
+
+          history(
+            "合併公用更新：" +
+              appliedVersion +
+              "（新增商品 " +
+              addedProductCount +
+              " 項、價格紀錄 " +
+              mergedRecordCount +
+              " 筆）",
+          );
+
           stats();
+
+          showPublicUpdateSuccess(
+            appliedVersion,
+            addedProductCount,
+            mergedRecordCount,
+          );
         } catch (e) {
           msg(e.message, "error");
           log(e.message);
