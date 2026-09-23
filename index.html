@@ -1138,16 +1138,11 @@
             <h3>分享商品</h3>
           </div>
           <div class="update-body">
-            <p>勾選想分享的商品並上傳</p>
-            <small>資料將先送交管理者審核，再納入公用商品資料庫。</small>
+            <p>匯出目前所有未刪除的商品與價格紀錄，交由管理者整理後發布。</p>
+            <small>第一版會下載「商品列表.json」；不會直接上傳、不會修改公用資料，也不包含照片與私人備註。</small>
             <div class="update-actions" style="grid-template-columns: 1fr">
-              <button
-                class="btn-orange"
-                id="shareProductsBtn"
-                type="button"
-                disabled
-              >
-                分享並上傳（功能準備中）
+              <button class="btn-orange" id="shareProductsBtn" type="button">
+                匯出商品列表 JSON
               </button>
             </div>
           </div>
@@ -3187,7 +3182,66 @@
         }
       }
 
+      function exportProductList() {
+        try {
+          const exportedAt = now();
+          const exportProducts = live().map((p) => {
+            const records = liveRecords(p).map((r) => ({
+              id: r.id,
+              price: Number(r.price),
+              store: r.store || "",
+              date: r.date || today,
+              createdAt: r.createdAt || "",
+              updatedAt: r.updatedAt || r.createdAt || "",
+              isDeleted: false,
+              deletedAt: "",
+            }));
+            return {
+              barcode: p.barcode,
+              name: p.name,
+              brand: p.brand || "",
+              aliasBarcodes: cleanCodes(p.aliasBarcodes || [], p.barcode),
+              records,
+              createdAt: p.createdAt || "",
+              updatedAt: p.updatedAt || p.createdAt || "",
+              isDeleted: false,
+              deletedAt: "",
+            };
+          });
+          const payload = {
+            schemaVersion: 1,
+            type: "price-tracker-public-submission",
+            submissionId: makeId(),
+            submittedAt: exportedAt,
+            productCount: exportProducts.length,
+            recordCount: exportProducts.reduce((n, p) => n + p.records.length, 0),
+            products: exportProducts,
+          };
+          const day = exportedAt.slice(0, 10);
+          const blob = new Blob([JSON.stringify(payload, null, 2)], {
+            type: "application/json;charset=utf-8",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `商品列表-${day}.json`;
+          document.body.append(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 0);
+          msg(
+            `已匯出商品列表：${payload.productCount} 項商品、${payload.recordCount} 筆價格紀錄。請將下載的 JSON 檔交給管理者。`,
+            "success",
+          );
+          history(`匯出商品列表 ${payload.productCount} 項／${payload.recordCount} 筆`);
+        } catch (e) {
+          msg(`匯出商品列表失敗：${e.message}`, "error");
+          log(`匯出商品列表失敗：${e.message}`);
+        }
+      }
+
       // 綁定按鈕事件
+      shareProductsBtn.onclick = exportProductList;
       checkPublicUpdateBtn.onclick = checkPublicUpdate;
       applyPublicUpdateBtn.onclick = applyPublicUpdate;
       // ========== 公用資料庫更新功能結束 ==========
