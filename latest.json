@@ -1,31 +1,566 @@
 {
   "schemaVersion": 1,
   "type": "price-tracker-public-release",
-  "releaseVersion": "2026-09-22-test-09",
-  "releasedAt": "2026-09-22T16:13:00+08:00",
-  "productCount": 2,
-  "recordCount": 2,
+  "releaseVersion": "2026-09-23-test-10",
+  "releasedAt": "2026-09-23T02:02:44.091Z",
+  "productCount": 24,
+  "recordCount": 27,
   "products": [
     {
-      "barcode": "4719990000005",
-      "name": "公用更新測試商品 E",
-      "brand": "測試品牌",
+      "barcode": "8714789257183",
+      "name": "舒潔濕紙巾",
+      "brand": "",
       "aliasBarcodes": [],
-      "note": "保留 test-08 的測試商品；本機已刪除時，公用更新不得讓它自動重新出現在列表。",
+      "note": "",
       "records": [
         {
-          "id": "public-e-001",
-          "price": 99,
-          "store": "測試賣場",
-          "date": "2026-09-21",
-          "createdAt": "2026-09-21T15:10:00+08:00",
-          "updatedAt": "2026-09-21T17:30:00+08:00",
+          "id": "73cbed98-9695-4a7a-b507-2e3824e2959c",
+          "price": 322,
+          "store": "",
+          "date": "2026-08-25",
+          "createdAt": "2026-09-01T08:56:00.115Z",
+          "updatedAt": "2026-09-01T08:56:00.115Z",
           "isDeleted": false,
           "deletedAt": ""
         }
       ],
-      "createdAt": "2026-09-21T15:10:00+08:00",
-      "updatedAt": "2026-09-21T17:30:00+08:00",
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "6972863662760",
+      "name": "充電器",
+      "brand": "萌虎",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "2965a34c-bf90-4013-80d3-bb47f9429c11",
+          "price": 1100,
+          "store": "WEB",
+          "date": "2026-08-26",
+          "createdAt": "2026-09-01T10:00:32.976Z",
+          "updatedAt": "2026-09-01T10:00:32.976Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        },
+        {
+          "id": "820334af-660f-4e74-ab31-cbaed670b6da",
+          "price": 1100,
+          "store": "萌虎3C",
+          "date": "2026-08-26",
+          "createdAt": "2026-09-01T10:00:32.976Z",
+          "updatedAt": "2026-09-01T10:00:32.976Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710713178076",
+      "name": "柚子鹽",
+      "brand": "",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "3c45dc69-a1d2-42b0-981c-16017efe6c31",
+          "price": 70,
+          "store": "農會",
+          "date": "2026-08-26",
+          "createdAt": "2026-09-04T06:24:50.094Z",
+          "updatedAt": "2026-09-04T06:24:50.094Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        },
+        {
+          "id": "0a89177f-99e0-453e-be9e-b185a5023a0f",
+          "price": 70,
+          "store": "農會",
+          "date": "2026-08-26",
+          "createdAt": "2026-09-04T06:24:50.094Z",
+          "updatedAt": "2026-09-04T06:24:50.094Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        },
+        {
+          "id": "6a6ff228-6a69-415b-bf9b-d35d292725f6",
+          "price": 71,
+          "store": "",
+          "date": "2026-08-26",
+          "createdAt": "2026-09-04T06:24:50.094Z",
+          "updatedAt": "2026-09-04T06:24:50.094Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        },
+        {
+          "id": "a070b6fe-9cc9-4e29-8b55-876e566b930c",
+          "price": 70,
+          "store": "",
+          "date": "2026-09-04",
+          "createdAt": "2026-09-04T06:24:50.090Z",
+          "updatedAt": "2026-09-04T06:24:50.094Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710063305825",
+      "name": "氣泡水",
+      "brand": "味全",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "ba174261-9f9f-4f3b-b126-78f9e86661b4",
+          "price": 25,
+          "store": "",
+          "date": "2026-08-31",
+          "createdAt": "2026-09-02T09:01:07.476Z",
+          "updatedAt": "2026-09-02T09:01:07.476Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "9789861338859",
+      "name": "書",
+      "brand": "",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "f123aa0b-a11a-4124-835a-7a4683a294b4",
+          "price": 380,
+          "store": "",
+          "date": "2026-09-01",
+          "createdAt": "2026-09-01T08:56:00.115Z",
+          "updatedAt": "2026-09-01T08:56:00.115Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710059012744",
+      "name": "白胡椒鹽",
+      "brand": "小磨坊",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "0dd76b49-bc87-4149-811b-97722472b83c",
+          "price": 95,
+          "store": "",
+          "date": "2026-09-01",
+          "createdAt": "2026-09-01T08:56:28.038Z",
+          "updatedAt": "2026-09-01T08:56:28.038Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        },
+        {
+          "id": "8e00be82-60f9-4ef2-b7df-1f5815d481ad",
+          "price": 58,
+          "store": "",
+          "date": "2026-09-01",
+          "createdAt": "2026-09-01T08:56:28.038Z",
+          "updatedAt": "2026-09-01T08:56:28.038Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "80052760",
+      "name": "Kinder Bueno 健达缤纷乐",
+      "brand": "Kinder",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "8644981b-0680-480c-a12b-96b5e810d197",
+          "price": 35,
+          "store": "",
+          "date": "2026-09-02",
+          "createdAt": "2026-09-02T07:18:45.610Z",
+          "updatedAt": "2026-09-02T07:18:45.610Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4719873980017",
+      "name": "新一點絕凝膠餌劑5g",
+      "brand": "",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "5bea2ac0-6d58-46ca-9e88-245d5c87c497",
+          "price": 299,
+          "store": "小北百貨",
+          "date": "2026-09-04",
+          "createdAt": "2026-09-04T06:43:41.342Z",
+          "updatedAt": "2026-09-04T06:43:41.342Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "8801043014830",
+      "name": "韓國辛拉麵5包裝",
+      "brand": "shin ramyun",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "7ad0a790-c2d5-42dc-91c2-c243f78831df",
+          "price": 175,
+          "store": "美廉社",
+          "date": "2026-09-04",
+          "createdAt": "2026-09-04T11:27:38.946Z",
+          "updatedAt": "2026-09-04T11:27:38.946Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710110226615",
+      "name": "味味一品珍品牛肉麵 3包裝",
+      "brand": "味丹",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "8ec71cd2-edeb-425b-9970-1addcc1fd4e8",
+          "price": 132,
+          "store": "美廉社",
+          "date": "2026-09-04",
+          "createdAt": "2026-09-04T11:30:34.497Z",
+          "updatedAt": "2026-09-04T11:30:34.497Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710088410191",
+      "name": "科學麵",
+      "brand": "統一",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "ec6ac117-ccb0-4c0f-bf94-3b4a334085bb",
+          "price": 10,
+          "store": "7-11",
+          "date": "2026-09-04",
+          "createdAt": "2026-09-04T15:12:08.938Z",
+          "updatedAt": "2026-09-04T15:12:08.938Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710114815099",
+      "name": "舒潔 濕式衛生紙",
+      "brand": "舒潔",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4711934357776",
+      "name": "甘得黴軟膏",
+      "brand": "中生生技製藥",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "079567850052",
+      "name": "WD40",
+      "brand": "",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710731020715",
+      "name": "潔淨大師小蘇打洗碗精",
+      "brand": "",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "be0b9d12-8b31-4570-9047-648acb7d6b7d",
+          "price": 59,
+          "store": "美廉社",
+          "date": "2026-09-17",
+          "createdAt": "2026-09-17T06:28:31.095Z",
+          "updatedAt": "2026-09-17T06:29:51.119Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710552078995",
+      "name": "Simple Life洗碗精",
+      "brand": "",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "4ece6a4c-f01d-44b0-9446-e9bde926d9a4",
+          "price": 45,
+          "store": "美廉社",
+          "date": "2026-09-10",
+          "createdAt": "2026-09-10T11:15:18.762Z",
+          "updatedAt": "2026-09-10T11:15:18.762Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4710199038994",
+      "name": "維力大乾麵 地獄辣椒",
+      "brand": "維力",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "349cbe86-4d90-44e6-9cd2-2e08e52a3c6f",
+          "price": 85,
+          "store": "美廉社",
+          "date": "2026-09-10",
+          "createdAt": "2026-09-10T11:17:07.454Z",
+          "updatedAt": "2026-09-10T11:17:07.454Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "8801073114630",
+      "name": "三養火辣雞肉風味鐵板炒麵",
+      "brand": "三養",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "2f021528-0726-4c40-bac7-9a8e0c887a7c",
+          "price": 62,
+          "store": "美廉社",
+          "date": "2026-09-10",
+          "createdAt": "2026-09-15T03:03:10.174Z",
+          "updatedAt": "2026-09-15T03:03:10.174Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4719990000001",
+      "name": "公用更新測試商品 A",
+      "brand": "測試品牌",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "public-a-001",
+          "price": 49,
+          "store": "測試賣場",
+          "date": "2026-09-15",
+          "createdAt": "2026-09-15T10:00:00+08:00",
+          "updatedAt": "2026-09-15T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4719990000002",
+      "name": "公用更新測試商品 B",
+      "brand": "測試品牌",
+      "aliasBarcodes": [
+        "4719990000102"
+      ],
+      "note": "",
+      "records": [
+        {
+          "id": "public-b-001",
+          "price": 89,
+          "store": "測試超市",
+          "date": "2026-09-14",
+          "createdAt": "2026-09-14T10:00:00+08:00",
+          "updatedAt": "2026-09-14T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4719990000003",
+      "name": "公用更新測試商品 C",
+      "brand": "測試品牌",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "public-c-001",
+          "price": 59,
+          "store": "測試量販店",
+          "date": "2026-09-13",
+          "createdAt": "2026-09-13T10:00:00+08:00",
+          "updatedAt": "2026-09-13T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        },
+        {
+          "id": "public-c-002",
+          "price": 65,
+          "store": "測試量販店",
+          "date": "2026-09-16",
+          "createdAt": "2026-09-16T10:00:00+08:00",
+          "updatedAt": "2026-09-16T10:00:00+08:00",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4711100841924",
+      "name": "RASTO RH7 鋁合金四孔HUB集線器",
+      "brand": "",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "f7bc6716-b32d-4de0-94dc-23d93358f139",
+          "price": 399,
+          "store": "家樂福",
+          "date": "2026-09-19",
+          "createdAt": "2026-09-19T13:08:15.732Z",
+          "updatedAt": "2026-09-19T13:08:15.732Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
+      "isDeleted": false,
+      "deletedAt": ""
+    },
+    {
+      "barcode": "4987176297464",
+      "name": "飛柔蓬鬆去屑洗髮精",
+      "brand": "飛柔",
+      "aliasBarcodes": [],
+      "note": "",
+      "records": [
+        {
+          "id": "f481721a-9bad-4986-8ec7-6bff58147934",
+          "price": 229,
+          "store": "家樂福",
+          "date": "2026-09-19",
+          "createdAt": "2026-09-19T13:12:45.403Z",
+          "updatedAt": "2026-09-19T13:12:45.403Z",
+          "isDeleted": false,
+          "deletedAt": ""
+        }
+      ],
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
       "isDeleted": false,
       "deletedAt": ""
     },
@@ -34,7 +569,7 @@
       "name": "公用更新測試商品 F",
       "brand": "測試品牌",
       "aliasBarcodes": [],
-      "note": "test-09 新增商品：用於驗證公用更新可新增從未存在於本機的商品，並在重整後保留。",
+      "note": "",
       "records": [
         {
           "id": "public-f-001",
@@ -47,8 +582,8 @@
           "deletedAt": ""
         }
       ],
-      "createdAt": "2026-09-22T16:13:00+08:00",
-      "updatedAt": "2026-09-22T16:13:00+08:00",
+      "createdAt": "2026-09-23T02:02:44.091Z",
+      "updatedAt": "2026-09-23T02:02:44.091Z",
       "isDeleted": false,
       "deletedAt": ""
     }
