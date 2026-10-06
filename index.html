@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1"
     />
-    <title>我的價格紀錄｜v1.1.13</title>
+    <title>我的價格紀錄｜v1.1.14</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
       :root {
@@ -1003,6 +1003,20 @@
           grid-template-columns: 1fr;
         }
       }
+
+      /* v1.1.14 商品列表：照片主視覺，僅截斷畫面文字 */
+      #list .card-head { display:grid; grid-template-columns:minmax(130px,42%) minmax(0,1fr); gap:14px; align-items:start; }
+      #list .list-photo-button { display:block; width:100%; aspect-ratio:1 / 1; padding:0; border:0; border-radius:12px; overflow:hidden; background:#f8fbfd; cursor:zoom-in; }
+      #list .list-photo-button:focus-visible { outline:3px solid var(--primary); outline-offset:3px; }
+      #list .list-photo-button > div, #list .list-photo-button .list-thumb, #list .list-photo-button .list-thumb-empty { width:100%; height:100%; }
+      #list .list-thumb { object-fit:contain; border:1px solid var(--border); border-radius:12px; background:#fff; }
+      #list .list-thumb-empty { border-radius:12px; }
+      #list .card-text { min-width:0; overflow:hidden; }
+      #list .card-text strong { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; overflow-wrap:normal; }
+      #list .card-text .muted, #list .card-text .updated-time { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      #list .list-lowest { display:table; margin:10px 0 0; }
+      .photo-preview-image { display:block; max-width:100%; max-height:68vh; width:auto; height:auto; object-fit:contain; margin:0 auto 14px; }
+      @media (max-width:390px) { #list .card-head { grid-template-columns:minmax(105px,40%) minmax(0,1fr); gap:10px; } #list .card { padding:10px; } #list .list-actions button { padding:8px 12px; } }
     </style>
   </head>
 
@@ -1011,7 +1025,7 @@
       <h1>價格查詢</h1>
       <div class="version">
         <strong>我的價格紀錄</strong><br />版本
-        <span id="appVersion">v1.1.13</span>｜條碼掃描・商品管理・價格追蹤・雲端更新
+        <span id="appVersion">v1.1.16-pilot.1</span>｜條碼掃描・商品管理・價格追蹤・雲端更新
       </div>
       <button class="primary" id="startCamera">開啟相機掃描</button
       ><button class="secondary hidden" id="stopCamera">關閉相機</button>
@@ -1139,11 +1153,18 @@
           </div>
           <div class="update-body">
             <p>匯出目前所有未刪除的商品與價格紀錄，交由管理者整理後發布。</p>
-            <small>第一版會下載「商品列表.json」；不會直接上傳、不會修改公用資料，也不包含照片與私人備註。</small>
+            <small>可下載商品列表 JSON，或透過下方入口送出文字投稿。只送未刪除資料，不修改公用資料，不含照片與私人備註。</small>
             <div class="update-actions" style="grid-template-columns: 1fr">
               <button class="btn-orange" id="shareProductsBtn" type="button">
                 匯出商品列表 JSON
               </button>
+              <label for="submissionEndpoint">管理者自測投稿入口（/exec）</label>
+              <input id="submissionEndpoint" type="url" placeholder="貼上 Apps Script 網頁應用程式網址" style="width:100%;box-sizing:border-box">
+              <button id="saveSubmissionEndpoint" type="button">儲存入口設定</button>
+              <button id="openSubmissionEndpoint" type="button">先開啟入口確認登入</button>
+              <button class="btn-orange" id="sendSubmissionBtn" type="button">確認並送出文字投稿（自測）</button>
+              <p id="submissionStatus" role="status">尚未送出。回執會在新分頁顯示；本頁不會自行判定收件成功。</p>
+              <small>只送未刪除的商品與價格；不含照片及私人備註。本版僅供管理者本人驗證。</small>
             </div>
           </div>
         </div>
@@ -1253,7 +1274,7 @@
       </button>
     </nav>
     <script>
-      const APP_VERSION = "v1.1.13";
+      const APP_VERSION = "v1.1.16-pilot.1";
       document.title = `我的價格紀錄｜${APP_VERSION}`;
       const appVersionEl = document.getElementById("appVersion");
       if (appVersionEl) appVersionEl.textContent = APP_VERSION;
@@ -1563,6 +1584,7 @@
       }
       function closeModal() {
         $("modal").classList.add("hidden");
+        if (previewPhotoUrl) { URL.revokeObjectURL(previewPhotoUrl); previewPhotoUrl = null; }
       }
       async function openDB() {
         if (idb) return idb;
@@ -1653,6 +1675,26 @@
         $("localProductCount").textContent = live().length;
         $("localPhotoCount").textContent = await photoCount();
       }
+      let previewPhotoUrl = null;
+      async function openListPhoto(p) {
+        if (!p.imageMeta?.id && !p.imageUrl) return;
+        let src = p.imageUrl || "";
+        if (p.imageMeta?.id) {
+          try {
+            const blob = await getBlob(p.imageMeta.id);
+            if (!blob) { alert("照片尚未同步到這台裝置。"); return; }
+            src = URL.createObjectURL(blob);
+            previewPhotoUrl = src;
+          } catch (err) { alert("無法載入照片，請稍後重試。"); return; }
+        }
+        modal("商品照片", '<div id="listPhotoPreview"></div><button type="button" class="secondary" onclick="closeModal()">關閉</button>');
+        const image = document.createElement("img");
+        image.className = "photo-preview-image";
+        image.alt = p.name;
+        image.src = src;
+        image.onerror = () => { image.replaceWith(document.createTextNode("照片載入失敗")); };
+        $("listPhotoPreview").append(image);
+      }
       function renderList() {
         const q = $("filter").value.trim().toLowerCase(),
           list = $("list");
@@ -1673,7 +1715,20 @@
           c.className = "card";
           const h = document.createElement("div");
           h.className = "card-head";
-          h.append(thumb(p, true));
+          if (p.imageMeta?.id || p.imageUrl) {
+            const photoButton = document.createElement("button");
+            photoButton.type = "button";
+            photoButton.className = "list-photo-button";
+            photoButton.setAttribute("aria-label", "放大照片：" + p.name);
+            photoButton.append(thumb(p, true));
+            photoButton.onclick = () => openListPhoto(p);
+            h.append(photoButton);
+          } else {
+            const placeholder = document.createElement("div");
+            placeholder.className = "list-photo-button";
+            placeholder.append(thumb(p, true));
+            h.append(placeholder);
+          }
 
           const x = document.createElement("div");
           x.className = "card-text";
@@ -1712,7 +1767,8 @@
           low.className = "list-lowest";
           low.textContent = "最低 " + (lowest === "—" ? "—" : lowest + " 元");
 
-          h.append(x, low);
+          x.append(low);
+          h.append(x);
           c.append(h);
           const a = document.createElement("div");
           a.className = "list-actions";
@@ -3182,8 +3238,7 @@
         }
       }
 
-      function exportProductList() {
-        try {
+      function buildSubmissionPayload() {
           const exportedAt = now();
           const exportProducts = live().map((p) => {
             const records = liveRecords(p).map((r) => ({
@@ -3208,7 +3263,7 @@
               deletedAt: "",
             };
           });
-          const payload = {
+          return {
             schemaVersion: 1,
             type: "price-tracker-public-submission",
             submissionId: makeId(),
@@ -3217,6 +3272,12 @@
             recordCount: exportProducts.reduce((n, p) => n + p.records.length, 0),
             products: exportProducts,
           };
+      }
+
+      function exportProductList() {
+        try {
+          const payload = buildSubmissionPayload();
+          const exportedAt = payload.submittedAt;
           const day = exportedAt.slice(0, 10);
           const blob = new Blob([JSON.stringify(payload, null, 2)], {
             type: "application/json;charset=utf-8",
@@ -3239,6 +3300,38 @@
           log(`匯出商品列表失敗：${e.message}`);
         }
       }
+
+      // v1.1.16-pilot.1: native form POST, receipt in a separate tab.
+      const SUB_ENDPOINT_KEY = 'price-tracker-submission-endpoint-v1';
+      const SUB_PENDING_KEY = 'price-tracker-submission-pending-v1';
+      const subEndpoint = document.getElementById('submissionEndpoint');
+      const subStatus = document.getElementById('submissionStatus');
+      const DEFAULT_SUBMISSION_ENDPOINT = "https://script.google.com/macros/s/AKfycby2KMnnBtq36a4yE2DNPowSNSsICygl4pn8Lsfsqz5UVZKfkJGhaKHjq7mGwMwoPz5h/exec";
+      subEndpoint.value=DEFAULT_SUBMISSION_ENDPOINT;
+      try {subEndpoint.value=localStorage.getItem(SUB_ENDPOINT_KEY)||DEFAULT_SUBMISSION_ENDPOINT;} catch(e) {}
+      function checkedSubmissionEndpoint(){
+        const u=new URL(subEndpoint.value.trim());
+        if(u.protocol!=='https:'||u.hostname!=='script.google.com'||!/^\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u.pathname)||u.search||u.hash)throw Error('請填標準 https://script.google.com/macros/s/…/exec 網址，不含額外參數');
+        return u.href;
+      }
+      document.getElementById('saveSubmissionEndpoint').onclick=()=>{try{localStorage.setItem(SUB_ENDPOINT_KEY,checkedSubmissionEndpoint());subStatus.textContent='入口設定已儲存，尚未投稿。';}catch(e){subStatus.textContent=e.message;}};
+      document.getElementById('openSubmissionEndpoint').onclick=()=>{try{window.open(checkedSubmissionEndpoint(),'_blank','noopener');}catch(e){subStatus.textContent=e.message;}};
+      document.getElementById('sendSubmissionBtn').onclick=()=>{
+        try{
+          const endpoint=checkedSubmissionEndpoint(), fresh=buildSubmissionPayload();
+          if(!fresh.productCount)throw Error('沒有可投稿的有效商品');
+          let payload=fresh;
+          try{const old=JSON.parse(localStorage.getItem(SUB_PENDING_KEY)||'null');if(old&&JSON.stringify(old.products)===JSON.stringify(fresh.products))payload=old;}catch(e){}
+          const raw=JSON.stringify(payload,null,2);
+          if(new Blob([raw]).size>1048576)throw Error('超過自測上限 1 MiB，請保留下載匯出方式');
+          if(!confirm(`送出 ${payload.productCount} 項商品、${payload.recordCount} 筆價格？\n不含照片、私人備註或刪除資料。\n回執在新分頁顯示；僅供管理者自測。`))return;
+          localStorage.setItem(SUB_PENDING_KEY,JSON.stringify(payload));
+          const form=document.createElement('form');form.method='POST';form.action=endpoint;form.target='_blank';form.rel='noopener';form.acceptCharset='UTF-8';
+          for(const [name,value] of Object.entries({raw,requestId:payload.submissionId})){const field=document.createElement('input');field.type='hidden';field.name=name;field.value=value;form.appendChild(field);}
+          document.body.appendChild(form);form.submit();form.remove();
+          subStatus.textContent='已發起送件，尚未確認收件。請查看新分頁的回執。投稿編號：'+payload.submissionId+'。相同內容重試沿用此編號。';
+        }catch(e){subStatus.textContent='未送出：'+e.message+'。可使用原有 JSON 匯出。';}
+      };
 
       // 綁定按鈕事件
       shareProductsBtn.onclick = exportProductList;
