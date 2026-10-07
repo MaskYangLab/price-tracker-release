@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1"
     />
-    <title>我的價格紀錄｜v1.1.14</title>
+    <title>我的價格紀錄｜v1.2.2</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
       :root {
@@ -1025,7 +1025,7 @@
       <h1>價格查詢</h1>
       <div class="version">
         <strong>我的價格紀錄</strong><br />版本
-        <span id="appVersion">v1.1.16-pilot.1</span>｜條碼掃描・商品管理・價格追蹤・雲端更新
+        <span id="appVersion">v1.2.2</span>｜條碼掃描・商品管理・價格追蹤・雲端更新
       </div>
       <button class="primary" id="startCamera">開啟相機掃描</button
       ><button class="secondary hidden" id="stopCamera">關閉相機</button>
@@ -1158,13 +1158,12 @@
               <button class="btn-orange" id="shareProductsBtn" type="button">
                 匯出商品列表 JSON
               </button>
-              <label for="submissionEndpoint">管理者自測投稿入口（/exec）</label>
-              <input id="submissionEndpoint" type="url" placeholder="貼上 Apps Script 網頁應用程式網址" style="width:100%;box-sizing:border-box">
-              <button id="saveSubmissionEndpoint" type="button">儲存入口設定</button>
-              <button id="openSubmissionEndpoint" type="button">先開啟入口確認登入</button>
-              <button class="btn-orange" id="sendSubmissionBtn" type="button">確認並送出文字投稿（自測）</button>
-              <p id="submissionStatus" role="status">尚未送出。回執會在新分頁顯示；本頁不會自行判定收件成功。</p>
-              <small>只送未刪除的商品與價格；不含照片及私人備註。本版僅供管理者本人驗證。</small>
+              <label for="submitterName">投稿者暱稱</label>
+              <input id="submitterName" type="text" maxlength="40" placeholder="暱稱或代號，不必填真名或 Email" style="width:100%;box-sizing:border-box">
+              <small>必填，最多20字；此瀏覽器會記住。暱稱是自填標記，不是身分驗證。</small>
+              <button class="btn-orange" id="sendSubmissionBtn" type="button">確認並送出文字投稿</button>
+              <p id="submissionStatus" role="status">尚未送出。回執在新分頁顯示，本頁不自行判定收件成功。</p>
+              <small>匿名內測；只送未刪除商品與價格，不含照片及私人備註。暱稱會附在待審核投稿中。</small>
             </div>
           </div>
         </div>
@@ -1274,7 +1273,7 @@
       </button>
     </nav>
     <script>
-      const APP_VERSION = "v1.1.16-pilot.1";
+      const APP_VERSION = "v1.2.2";
       document.title = `我的價格紀錄｜${APP_VERSION}`;
       const appVersionEl = document.getElementById("appVersion");
       if (appVersionEl) appVersionEl.textContent = APP_VERSION;
@@ -3268,6 +3267,7 @@
             type: "price-tracker-public-submission",
             submissionId: makeId(),
             submittedAt: exportedAt,
+            submitterName: submissionName(),
             productCount: exportProducts.length,
             recordCount: exportProducts.reduce((n, p) => n + p.records.length, 0),
             products: exportProducts,
@@ -3301,30 +3301,34 @@
         }
       }
 
-      // v1.1.16-pilot.1: native form POST, receipt in a separate tab.
-      const SUB_ENDPOINT_KEY = 'price-tracker-submission-endpoint-v1';
+      // v1.2.2: native form POST, receipt in a separate tab.
       const SUB_PENDING_KEY = 'price-tracker-submission-pending-v1';
-      const subEndpoint = document.getElementById('submissionEndpoint');
+      const SUB_NAME_KEY = 'price-tracker-submitter-name-v1';
       const subStatus = document.getElementById('submissionStatus');
-      const DEFAULT_SUBMISSION_ENDPOINT = "https://script.google.com/macros/s/AKfycby2KMnnBtq36a4yE2DNPowSNSsICygl4pn8Lsfsqz5UVZKfkJGhaKHjq7mGwMwoPz5h/exec";
-      subEndpoint.value=DEFAULT_SUBMISSION_ENDPOINT;
-      try {subEndpoint.value=localStorage.getItem(SUB_ENDPOINT_KEY)||DEFAULT_SUBMISSION_ENDPOINT;} catch(e) {}
+      const nameInput = document.getElementById('submitterName');
+      const SUBMISSION_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzTXSeqZ93tYH_1Lu9NMua8-qCADTE3kg62Us5YOD4b5C7vM2sUr5Ag_jxtINzc2CRG/exec';
+      try {nameInput.value=localStorage.getItem(SUB_NAME_KEY)||'';} catch(e) {}
+      function submissionName(){
+        const value=nameInput.value.trim().normalize('NFC');
+        if(!value || Array.from(value).length>20 || /[\u0000-\u001f\u007f]/.test(value))throw Error('請填1至20字的投稿者暱稱，不含控制字元');
+        return value;
+      }
+      nameInput.addEventListener('change',()=>{try{localStorage.setItem(SUB_NAME_KEY,submissionName());}catch(e){subStatus.textContent=e.message;}});
       function checkedSubmissionEndpoint(){
-        const u=new URL(subEndpoint.value.trim());
-        if(u.protocol!=='https:'||u.hostname!=='script.google.com'||!/^\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u.pathname)||u.search||u.hash)throw Error('請填標準 https://script.google.com/macros/s/…/exec 網址，不含額外參數');
+        const u=new URL(SUBMISSION_ENDPOINT);
+        if(u.protocol!=='https:'||u.hostname!=='script.google.com'||!/^\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(u.pathname)||u.search||u.hash)throw Error('管理者尚未設定正確測試入口');
         return u.href;
       }
-      document.getElementById('saveSubmissionEndpoint').onclick=()=>{try{localStorage.setItem(SUB_ENDPOINT_KEY,checkedSubmissionEndpoint());subStatus.textContent='入口設定已儲存，尚未投稿。';}catch(e){subStatus.textContent=e.message;}};
-      document.getElementById('openSubmissionEndpoint').onclick=()=>{try{window.open(checkedSubmissionEndpoint(),'_blank','noopener');}catch(e){subStatus.textContent=e.message;}};
       document.getElementById('sendSubmissionBtn').onclick=()=>{
         try{
           const endpoint=checkedSubmissionEndpoint(), fresh=buildSubmissionPayload();
           if(!fresh.productCount)throw Error('沒有可投稿的有效商品');
           let payload=fresh;
-          try{const old=JSON.parse(localStorage.getItem(SUB_PENDING_KEY)||'null');if(old&&JSON.stringify(old.products)===JSON.stringify(fresh.products))payload=old;}catch(e){}
+          try{const old=JSON.parse(localStorage.getItem(SUB_PENDING_KEY)||'null');if(old&&old.submitterName===fresh.submitterName&&JSON.stringify(old.products)===JSON.stringify(fresh.products))payload=old;}catch(e){}
           const raw=JSON.stringify(payload,null,2);
-          if(new Blob([raw]).size>1048576)throw Error('超過自測上限 1 MiB，請保留下載匯出方式');
-          if(!confirm(`送出 ${payload.productCount} 項商品、${payload.recordCount} 筆價格？\n不含照片、私人備註或刪除資料。\n回執在新分頁顯示；僅供管理者自測。`))return;
+          if(new Blob([raw]).size>1048576)throw Error('超過投稿上限 1 MiB，請保留下載匯出方式');
+          if(!confirm(`送出 ${payload.productCount} 項商品、${payload.recordCount} 筆價格？\n不含照片、私人備註或刪除資料。\n回執在新分頁顯示；投稿者：${payload.submitterName}（自填）。`))return;
+          localStorage.setItem(SUB_NAME_KEY,payload.submitterName);
           localStorage.setItem(SUB_PENDING_KEY,JSON.stringify(payload));
           const form=document.createElement('form');form.method='POST';form.action=endpoint;form.target='_blank';form.rel='noopener';form.acceptCharset='UTF-8';
           for(const [name,value] of Object.entries({raw,requestId:payload.submissionId})){const field=document.createElement('input');field.type='hidden';field.name=name;field.value=value;form.appendChild(field);}
