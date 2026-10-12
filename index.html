@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,maximum-scale=1"
     />
-    <title>我的價格紀錄｜v1.2.2</title>
+    <title>我的價格紀錄｜v1.2.3</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
       :root {
@@ -1025,7 +1025,7 @@
       <h1>價格查詢</h1>
       <div class="version">
         <strong>我的價格紀錄</strong><br />版本
-        <span id="appVersion">v1.2.2</span>｜條碼掃描・商品管理・價格追蹤・雲端更新
+        <span id="appVersion">v1.2.3</span>｜條碼掃描・商品管理・價格追蹤・雲端更新
       </div>
       <button class="primary" id="startCamera">開啟相機掃描</button
       ><button class="secondary hidden" id="stopCamera">關閉相機</button>
@@ -1273,7 +1273,7 @@
       </button>
     </nav>
     <script>
-      const APP_VERSION = "v1.2.2";
+      const APP_VERSION = "v1.2.3";
       document.title = `我的價格紀錄｜${APP_VERSION}`;
       const appVersionEl = document.getElementById("appVersion");
       if (appVersionEl) appVersionEl.textContent = APP_VERSION;
@@ -2632,6 +2632,39 @@
         }
         return { m, add, rec };
       }
+      function mergePublicPlans(local, incoming) {
+        const m = local.map(norm);
+        const map = new Map(m.map(p => [p.barcode, p]));
+        let add = 0, rec = 0;
+        for (const raw of incoming) {
+          const c = norm(raw);
+          if (deleted(c)) continue;
+          const l = map.get(c.barcode);
+          if (!l) {
+            c.note = "";
+            c.imageUrl = "";
+            c.imageSource = "";
+            c.sourceUrl = "";
+            c.imageMeta = null;
+            c.records = c.records.filter(r => !deleted(r));
+            m.push(c);
+            map.set(c.barcode, c);
+            add++;
+            rec += c.records.length;
+            continue;
+          }
+          if (deleted(l)) continue;
+          l.aliasBarcodes = cleanCodes([...(l.aliasBarcodes || []), ...(c.aliasBarcodes || [])], l.barcode);
+          const ids = new Set(l.records.map(r => r.id));
+          for (const r of c.records) {
+            if (deleted(r) || ids.has(r.id)) continue;
+            l.records.push(r);
+            ids.add(r.id);
+            rec++;
+          }
+        }
+        return { m, add, rec };
+      }
       function photoName(id) {
         return PHOTO_PREFIX + id + ".jpg";
       }
@@ -3146,7 +3179,7 @@
         );
 
         try {
-          const merged = mergePlans(products, publicData.products);
+          const merged = mergePublicPlans(products, publicData.products);
           const appliedVersion = publicData.releaseVersion;
 
           if (!Array.isArray(merged.m)) {
@@ -3301,7 +3334,7 @@
         }
       }
 
-      // v1.2.2: native form POST, receipt in a separate tab.
+      // v1.2.3: native form POST, receipt in a separate tab.
       const SUB_PENDING_KEY = 'price-tracker-submission-pending-v1';
       const SUB_NAME_KEY = 'price-tracker-submitter-name-v1';
       const subStatus = document.getElementById('submissionStatus');
